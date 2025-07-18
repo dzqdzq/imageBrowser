@@ -32,6 +32,23 @@ export function formatDate(timestamp: number): string {
   return new Date(timestamp).toLocaleString('zh-CN')
 }
 
+// 获取图片的原始尺寸
+export function getImageDimensions(url: string): Promise<{ width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    img.onload = () => {
+      resolve({
+        width: img.naturalWidth,
+        height: img.naturalHeight
+      })
+    }
+    img.onerror = () => {
+      reject(new Error('Failed to load image'))
+    }
+    img.src = url
+  })
+}
+
 // 从文件列表创建ImageFile对象
 export function createImageFile(file: File, customPath?: string): ImageFile {
   return {
@@ -43,6 +60,22 @@ export function createImageFile(file: File, customPath?: string): ImageFile {
     type: file.type,
     extension: getFileExtension(file.name)
   }
+}
+
+// 创建带有尺寸信息的ImageFile对象
+export async function createImageFileWithDimensions(file: File, customPath?: string): Promise<ImageFile> {
+  const imageFile = createImageFile(file, customPath)
+  
+  try {
+    const dimensions = await getImageDimensions(imageFile.url)
+    imageFile.width = dimensions.width
+    imageFile.height = dimensions.height
+  } catch (error) {
+    console.warn(`Failed to get dimensions for ${imageFile.name}:`, error)
+    // 尺寸获取失败时不设置width和height，保持undefined
+  }
+  
+  return imageFile
 }
 
 // 处理拖拽的文件列表
@@ -72,7 +105,8 @@ async function processEntry(entry: FileSystemEntry, files: ImageFile[], currentP
     const fileEntry = entry as FileSystemFileEntry
     if (isImageFile(entry.name)) {
       const file = await getFileFromEntry(fileEntry)
-      files.push(createImageFile(file, fullPath))
+      const imageFile = await createImageFileWithDimensions(file, fullPath)
+      files.push(imageFile)
     }
   } else if (entry.isDirectory) {
     const dirEntry = entry as FileSystemDirectoryEntry

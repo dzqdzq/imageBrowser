@@ -1,6 +1,6 @@
 import { ref, computed, nextTick } from 'vue'
 import type { ImageFile, DirectoryInfo, ViewMode } from '@/types'
-import { processDroppedFiles, generateDirectoryInfo, createImageFile } from '@/utils/fileUtils'
+import { processDroppedFiles, generateDirectoryInfo, createImageFile, createImageFileWithDimensions } from '@/utils/fileUtils'
 
 export function useImageBrowser() {
   const images = ref<ImageFile[]>([])
@@ -55,7 +55,7 @@ export function useImageBrowser() {
   }
 
   // 处理文件选择（通过文件输入）
-  function handleFileSelect(files: FileList) {
+  async function handleFileSelect(files: FileList) {
     isLoading.value = true
     
     const newImages: ImageFile[] = []
@@ -65,7 +65,8 @@ export function useImageBrowser() {
       if (file.type.startsWith('image/')) {
         // 使用webkitRelativePath获取完整的相对路径，如果没有则使用文件名
         const fullPath = file.webkitRelativePath || file.name
-        newImages.push(createImageFile(file, fullPath))
+        const imageFile = await createImageFileWithDimensions(file, fullPath)
+        newImages.push(imageFile)
       }
     }
     

@@ -6,6 +6,8 @@ export interface ImageFile {
   lastModified: number
   type: string
   extension: string
+  width?: number  // 图片原始宽度
+  height?: number // 图片原始高度
 }
 
 export interface DirectoryInfo {

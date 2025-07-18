@@ -212,29 +212,36 @@
           />
         </div>
 
-        <!-- 缩放控制工具栏移到底部 -->
-        <div class="zoom-controls">
-          <button @click="zoomOut" class="zoom-btn" title="缩小 (滚轮向下)">🔍-</button>
-          <span class="zoom-indicator">{{ Math.round(scale * 100) }}%</span>
-          <button @click="zoomIn" class="zoom-btn" title="放大 (滚轮向上)">🔍+</button>
-          
-          <div class="divider"></div>
-          
-          <button @click="fitToWindow" class="zoom-btn" :class="{ active: fitMode === 'contain' }" title="适应窗口">⛶</button>
-          <button @click="fitToWidth" class="zoom-btn" :class="{ active: fitMode === 'width' }" title="适应宽度 (长图推荐)">↔</button>
-          <button @click="originalSize" class="zoom-btn" :class="{ active: fitMode === 'original' }" title="原始尺寸">🔲</button>
-          
-          <div class="divider"></div>
-          
-          <button @click="resetView" class="zoom-btn" title="重置视图">↻</button>
-        </div>
-
         <div class="modal-info">
-          <h3>{{ selectedImage.name }}</h3>
-          <p>{{ formatFileSize(selectedImage.size) }} • {{ formatDate(selectedImage.lastModified) }}</p>
-          <p class="modal-path">
-            <span class="path-label">路径：</span>{{ selectedImage.path }}
-          </p>
+          <div class="info-content">
+            <div class="image-meta">
+              <h3>{{ selectedImage.name }}</h3>
+              <p>{{ formatFileSize(selectedImage.size) }} • {{ formatDate(selectedImage.lastModified) }}</p>
+              <p v-if="selectedImage.width && selectedImage.height" class="image-dimensions">
+                <span class="dimensions-label">尺寸：</span>{{ selectedImage.width }} × {{ selectedImage.height }} 像素
+              </p>
+              <p class="modal-path">
+                <span class="path-label">路径：</span>{{ selectedImage.path }}
+              </p>
+            </div>
+            
+            <!-- 缩放控制工具栏融合到信息区域 -->
+            <div class="zoom-controls">
+              <button @click="zoomOut" class="zoom-btn" title="缩小 (滚轮向下)">🔍-</button>
+              <span class="zoom-indicator">{{ Math.round(scale * 100) }}%</span>
+              <button @click="zoomIn" class="zoom-btn" title="放大 (滚轮向上)">🔍+</button>
+              
+              <div class="divider"></div>
+              
+              <button @click="fitToWindow" class="zoom-btn" :class="{ active: fitMode === 'contain' }" title="适应窗口">⛶</button>
+              <button @click="fitToWidth" class="zoom-btn" :class="{ active: fitMode === 'width' }" title="适应宽度 (长图推荐)">↔</button>
+              <button @click="originalSize" class="zoom-btn" :class="{ active: fitMode === 'original' }" title="原始尺寸">🔲</button>
+              
+              <div class="divider"></div>
+              
+              <button @click="resetView" class="zoom-btn" title="重置视图">↻</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -795,6 +802,11 @@ onUnmounted(() => {
   color: #718096;
 }
 
+.dimensions-label {
+  font-weight: 600;
+  color: #718096;
+}
+
 /* 空状态 */
 .empty-state {
   text-align: center;
@@ -846,13 +858,15 @@ onUnmounted(() => {
 
 .modal-content {
   position: relative;
-  max-width: 90vw;
-  max-height: 90vh;
+  width: 83vw;
+  height: 83vh;
   background: white;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   animation: modalSlideIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes modalSlideIn {
@@ -923,7 +937,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: center;
-  max-height: 70vh;
+  flex: 1;
   background: #f7fafc;
   overflow: auto;
   position: relative;
@@ -990,27 +1004,25 @@ onUnmounted(() => {
 .zoom-controls {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  gap: 0.3rem;
   background: rgba(0, 0, 0, 0.9);
-  border-radius: 25px;
-  padding: 0.5rem 1rem;
-  margin: 1rem auto;
-  width: fit-content;
+  border-radius: 20px;
+  padding: 0.4rem 0.8rem;
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  flex-shrink: 0;
 }
 
 .zoom-btn {
   background: rgba(255, 255, 255, 0.2);
   color: white;
   border: none;
-  border-radius: 6px;
-  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  padding: 0.3rem 0.5rem;
   cursor: pointer;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   transition: all 0.2s ease;
-  min-width: 2rem;
+  min-width: 1.8rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1028,38 +1040,54 @@ onUnmounted(() => {
 
 .zoom-indicator {
   color: white;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
-  min-width: 3rem;
+  min-width: 2.5rem;
   text-align: center;
   background: rgba(255, 255, 255, 0.1);
-  padding: 0.3rem 0.5rem;
-  border-radius: 4px;
+  padding: 0.25rem 0.4rem;
+  border-radius: 3px;
 }
 
 .divider {
   width: 1px;
-  height: 1.5rem;
+  height: 1.2rem;
   background: rgba(255, 255, 255, 0.3);
-  margin: 0 0.25rem;
+  margin: 0 0.2rem;
 }
 
 .modal-info {
-  padding: 1.5rem;
+  padding: 1rem 1.5rem;
   background: white;
+  flex-shrink: 0;
 }
 
-.modal-info h3 {
-  margin: 0 0 0.5rem 0;
-  font-size: 1.2rem;
+.info-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.image-meta {
+  flex: 1;
+  min-width: 0;
+}
+
+.image-meta h3 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
   font-weight: 600;
   color: #2d3748;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.modal-info p {
-  margin: 0.25rem 0;
+.image-meta p {
+  margin: 0.125rem 0;
   color: #4a5568;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
 }
 
 .modal-path {
@@ -1152,8 +1180,8 @@ onUnmounted(() => {
   }
 
   .modal-content {
-    max-width: 95vw;
-    max-height: 95vh;
+    width: 95vw;
+    height: 95vh;
   }
 
   .modal-navigation {
@@ -1166,22 +1194,36 @@ onUnmounted(() => {
     font-size: 0.8rem;
   }
 
+  .info-content {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+
   .zoom-controls {
-    margin: 0.5rem auto;
-    padding: 0.4rem 0.8rem;
-    gap: 0.3rem;
+    padding: 0.3rem 0.6rem;
+    gap: 0.25rem;
+    align-self: center;
   }
 
   .zoom-btn {
-    padding: 0.3rem 0.5rem;
-    font-size: 0.8rem;
-    min-width: 1.8rem;
+    padding: 0.25rem 0.4rem;
+    font-size: 0.7rem;
+    min-width: 1.5rem;
   }
 
   .zoom-indicator {
-    font-size: 0.7rem;
-    min-width: 2.5rem;
-    padding: 0.2rem 0.4rem;
+    font-size: 0.65rem;
+    min-width: 2rem;
+    padding: 0.2rem 0.3rem;
+  }
+
+  .image-meta h3 {
+    font-size: 1rem;
+  }
+
+  .image-meta p {
+    font-size: 0.8rem;
   }
 }
 
