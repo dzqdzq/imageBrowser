@@ -195,12 +195,38 @@
           </button>
         </div>
 
-        <div class="modal-image-wrapper">
+        <div 
+          class="modal-image-wrapper"
+          @wheel="handleWheel"
+          @mousedown="startDrag"
+          :class="{ 'dragging': isDragging, 'zoomed': scale > 1 }"
+        >
           <img
             :src="selectedImage.url"
             :alt="selectedImage.name"
             class="modal-image"
+            :class="`fit-${fitMode}`"
+            :style="{ transform: imageTransform }"
+            @dblclick="handleDoubleClick"
+            draggable="false"
           />
+        </div>
+
+        <!-- 缩放控制工具栏移到底部 -->
+        <div class="zoom-controls">
+          <button @click="zoomOut" class="zoom-btn" title="缩小 (滚轮向下)">🔍-</button>
+          <span class="zoom-indicator">{{ Math.round(scale * 100) }}%</span>
+          <button @click="zoomIn" class="zoom-btn" title="放大 (滚轮向上)">🔍+</button>
+          
+          <div class="divider"></div>
+          
+          <button @click="fitToWindow" class="zoom-btn" :class="{ active: fitMode === 'contain' }" title="适应窗口">⛶</button>
+          <button @click="fitToWidth" class="zoom-btn" :class="{ active: fitMode === 'width' }" title="适应宽度 (长图推荐)">↔</button>
+          <button @click="originalSize" class="zoom-btn" :class="{ active: fitMode === 'original' }" title="原始尺寸">🔲</button>
+          
+          <div class="divider"></div>
+          
+          <button @click="resetView" class="zoom-btn" title="重置视图">↻</button>
         </div>
 
         <div class="modal-info">
@@ -220,7 +246,8 @@
       </button>
       
       <div class="footer-stats">
-        {{ selectedImageIndex + 1 }} / {{ totalImages }}
+        <span v-if="selectedImage">{{ selectedImageIndex + 1 }} / {{ totalImages }}</span>
+        <span v-else>共 {{ totalImages }} 张图片</span>
       </div>
       
       <div class="file-input-wrapper">
@@ -242,8 +269,9 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, onUnmounted } from 'vue'
+import { onMounted, onUnmounted, watch } from 'vue'
 import { useImageBrowser } from '@/composables/useImageBrowser'
+import { useImageViewer } from '@/composables/useImageViewer'
 import { useSearch } from '@/composables/useSearch'
 import { formatFileSize, formatDate } from '@/utils/fileUtils'
 
@@ -275,6 +303,30 @@ const {
   searchStats,
   clearSearch
 } = useSearch(images)
+
+// 图片查看器功能
+const {
+  scale,
+  isDragging,
+  fitMode,
+  imageTransform,
+  resetView,
+  zoomIn,
+  zoomOut,
+  fitToWindow,
+  fitToWidth,
+  fitToHeight,
+  originalSize,
+  toggleFitMode,
+  handleWheel,
+  startDrag,
+  handleDoubleClick
+} = useImageViewer()
+
+// 当切换图片时重置查看器状态
+watch(selectedImage, () => {
+  resetView()
+})
 
 // 处理文件输入变化
 function handleFileInputChange(event: Event) {
@@ -873,12 +925,123 @@ onUnmounted(() => {
   justify-content: center;
   max-height: 70vh;
   background: #f7fafc;
+  overflow: auto;
+  position: relative;
+  cursor: grab;
+}
+
+/* 当适应宽度时，允许垂直滚动查看长图 */
+.modal-image-wrapper:has(.fit-width) {
+  align-items: flex-start;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* 当显示原始尺寸时，允许双向滚动 */
+.modal-image-wrapper:has(.fit-original) {
+  align-items: flex-start;
+  justify-content: flex-start;
+  overflow: auto;
+}
+
+.modal-image-wrapper.dragging {
+  cursor: grabbing;
+}
+
+.modal-image-wrapper.zoomed {
+  cursor: move;
 }
 
 .modal-image {
+  transition: transform 0.3s ease;
+  user-select: none;
+  display: block;
+}
+
+/* 不同适应模式的样式 */
+.modal-image.fit-contain {
   max-width: 100%;
   max-height: 100%;
   object-fit: contain;
+}
+
+.modal-image.fit-width {
+  width: 100%;
+  height: auto;
+  max-width: none;
+  max-height: none;
+}
+
+.modal-image.fit-height {
+  height: 100%;
+  width: auto;
+  max-width: none;
+  max-height: none;
+}
+
+.modal-image.fit-original {
+  max-width: none;
+  max-height: none;
+  width: auto;
+  height: auto;
+}
+
+/* 缩放控制工具栏 */
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.9);
+  border-radius: 25px;
+  padding: 0.5rem 1rem;
+  margin: 1rem auto;
+  width: fit-content;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.zoom-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  min-width: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.zoom-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.zoom-btn.active {
+  background: rgba(102, 126, 234, 0.8);
+  color: white;
+}
+
+.zoom-indicator {
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-width: 3rem;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.3rem 0.5rem;
+  border-radius: 4px;
+}
+
+.divider {
+  width: 1px;
+  height: 1.5rem;
+  background: rgba(255, 255, 255, 0.3);
+  margin: 0 0.25rem;
 }
 
 .modal-info {
@@ -1002,6 +1165,24 @@ onUnmounted(() => {
     padding: 0.5rem 0.75rem;
     font-size: 0.8rem;
   }
+
+  .zoom-controls {
+    margin: 0.5rem auto;
+    padding: 0.4rem 0.8rem;
+    gap: 0.3rem;
+  }
+
+  .zoom-btn {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+    min-width: 1.8rem;
+  }
+
+  .zoom-indicator {
+    font-size: 0.7rem;
+    min-width: 2.5rem;
+    padding: 0.2rem 0.4rem;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1110,6 +1291,10 @@ onUnmounted(() => {
 
   .path-label {
     color: #a0aec0;
+  }
+
+  .zoom-controls {
+    background: rgba(45, 55, 72, 0.95);
   }
 }
 </style> 

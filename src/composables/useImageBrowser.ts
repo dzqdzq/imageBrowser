@@ -46,10 +46,7 @@ export function useImageBrowser() {
       const newImages = await processDroppedFiles(event.dataTransfer.items)
       images.value = [...images.value, ...newImages]
       
-      // 如果是第一次加载图片，选择第一张
-      if (images.value.length === newImages.length && newImages.length > 0) {
-        selectedImage.value = newImages[0]
-      }
+      // 不自动选择图片，让用户主动点击查看
     } catch (error) {
       console.error('处理拖拽文件时出错:', error)
     } finally {
@@ -74,9 +71,7 @@ export function useImageBrowser() {
     
     images.value = [...images.value, ...newImages]
     
-    if (images.value.length === newImages.length && newImages.length > 0) {
-      selectedImage.value = newImages[0]
-    }
+    // 不自动选择图片，让用户主动点击查看
     
     isLoading.value = false
   }
