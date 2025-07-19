@@ -1,1 +1,8 @@
 node_modules
+dist
+.env
+.env.local
+.env.*.local
+publish_config.json
+*.log
+.DS_Store
