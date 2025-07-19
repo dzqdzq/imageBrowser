@@ -1,140 +1,144 @@
-# 📸 图片浏览器 (Image Browser)
+# 📸 Image Browser
 
-一个基于 Vue 3 + Vite + TypeScript 的现代化图片浏览器应用，支持拖拽本地目录、搜索图片等功能。
+A modern image browser application built with Vue 3 + Vite + TypeScript, supporting drag-and-drop local directories, image search, and more.
 
-体验地址： https://image-browser.aqiegames.com/
+Live Demo: https://image-browser.aqiegames.com/
 
-## ✨ 功能特性
+## 🌐 Language Support
 
-### 🚀 核心功能
-- **拖拽支持**: 直接拖拽本地文件夹到浏览器中，自动识别图片文件
-- **多格式支持**: JPG, JPEG, PNG, GIF, WebP, SVG, BMP, ICO, TIFF 等常见图片格式
-- **强大搜索**: 基于 Fuse.js 的模糊搜索，支持文件名、扩展名搜索
-- **多视图模式**: 支持网格视图和列表视图，网格支持小、中、大三种尺寸
-- **图片预览**: 点击图片可全屏预览，支持键盘导航（左右箭头、ESC 键）
-- **缩放功能**: 支持鼠标滚轮缩放、双击放大、拖拽移动，最大5倍放大
-- **长图优化**: 专门的适应宽度模式，完美显示长截图、漫画等长图内容
-- **智能路径显示**: 显示相对于选择目录的完整路径，包含子目录结构
-- **响应式设计**: 完美适配桌面、平板、手机等不同设备
+- [English](./README.md) (Current)
+- [中文](./README.zh-CN.md)
 
-### 🎨 界面特色
-- **现代化 UI**: 采用渐变背景、毛玻璃效果、阴影等现代设计元素
-- **流畅动画**: 悬停效果、页面切换、模态框等都有流畅的动画过渡
-- **暗色模式**: 自动适配系统暗色模式设置
-- **优化体验**: 懒加载、键盘快捷键、无障碍访问等细节优化
-- **友好交互**: 默认显示网格视图，用户主动点击查看预览，不强制弹窗
-- **专业预览**: 固定尺寸预览窗口(83%屏幕)，集成式工具栏设计，专业图片查看器体验
+## ✨ Features
 
-## 🛠️ 技术栈
+### 🚀 Core Features
+- **Drag & Drop Support**: Directly drag local folders into the browser, automatically recognizing image files
+- **Multi-format Support**: JPG, JPEG, PNG, GIF, WebP, SVG, BMP, ICO, TIFF and other common image formats
+- **Powerful Search**: Fuzzy search based on Fuse.js, supporting filename and extension search
+- **Multiple View Modes**: Grid view and list view support, with small, medium, and large grid sizes
+- **Image Preview**: Click images for full-screen preview with keyboard navigation (arrow keys, ESC)
+- **Zoom Functionality**: Mouse wheel zoom, double-click to zoom, drag to pan, up to 5x magnification
+- **Long Image Optimization**: Special width-adaptive mode for perfect display of long screenshots, comics, etc.
+- **Smart Path Display**: Shows complete paths relative to selected directory, including subdirectory structure
+- **Responsive Design**: Perfect adaptation for desktop, tablet, and mobile devices
 
-- **Vue 3**: 使用 Composition API 和 setup 语法糖
-- **TypeScript**: 完整的类型支持，提升开发体验
-- **Vite**: 极速的开发服务器和构建工具
-- **VueUse**: 强大的 Vue 组合式工具库
-- **Fuse.js**: 轻量级模糊搜索库
-- **pnpm**: 快速、节省磁盘空间的包管理器
+### 🎨 Interface Highlights
+- **Modern UI**: Gradient backgrounds, glassmorphism effects, shadows, and other modern design elements
+- **Smooth Animations**: Hover effects, page transitions, modal dialogs with smooth animations
+- **Dark Mode**: Automatic adaptation to system dark mode settings
+- **Optimized Experience**: Lazy loading, keyboard shortcuts, accessibility features, and other detail optimizations
+- **Friendly Interaction**: Default grid view display, user-initiated preview clicks, no forced popups
+- **Professional Preview**: Fixed-size preview window (83% screen), integrated toolbar design, professional image viewer experience
 
-## 📦 安装与使用
+## 🛠️ Tech Stack
 
-### 环境要求
-- Node.js 16+ 
+- **Vue 3**: Using Composition API and setup syntax sugar
+- **TypeScript**: Complete type support for enhanced development experience
+- **Vite**: Lightning-fast development server and build tool
+- **VueUse**: Powerful Vue composition utilities library
+- **Fuse.js**: Lightweight fuzzy search library
+- **pnpm**: Fast, disk-space-efficient package manager
+
+## 📦 Installation & Usage
+
+### Requirements
+- Node.js 16+
 - pnpm 8+
 
-### 快速开始
+### Quick Start
 
-1. **安装依赖**
+1. **Install Dependencies**
 ```bash
 pnpm install
 ```
 
-2. **启动开发服务器**
+2. **Start Development Server**
 ```bash
 pnpm dev
 ```
 
-3. **构建生产版本**
+3. **Build for Production**
 ```bash
 pnpm build
 ```
 
-4. **预览生产版本**
+4. **Preview Production Build**
 ```bash
 pnpm preview
 ```
 
-## 🎯 使用指南
+## 🎯 User Guide
 
-### 基本操作
+### Basic Operations
 
-1. **添加图片**
-   - 直接拖拽包含图片的文件夹到浏览器窗口
-   - 或点击"选择文件夹"按钮选择本地文件夹
+1. **Adding Images**
+   - Drag and drop folders containing images directly into the browser window
+   - Or click the "Select Folder" button to choose a local folder
 
-2. **浏览图片**
-   - 拖拽或选择文件夹后默认显示网格视图，不会自动弹出预览
-   - 网格视图：点击切换不同尺寸（小图/中图/大图），鼠标悬浮显示完整路径
-   - 列表视图：显示详细的文件信息和完整路径
-   - 点击图片可进入全屏预览模式，显示完整路径信息
+2. **Browsing Images**
+   - After dragging or selecting a folder, grid view is displayed by default without auto-preview
+   - Grid View: Click to switch between different sizes (small/medium/large), hover to show full path
+   - List View: Display detailed file information and complete paths
+   - Click images to enter full-screen preview mode with complete path information
 
-3. **搜索图片**
-   - 在搜索框中输入关键词
-   - 支持搜索文件名和扩展名
-   - 实时搜索，无需按回车
+3. **Searching Images**
+   - Enter keywords in the search box
+   - Supports searching filenames and extensions
+   - Real-time search, no need to press Enter
 
-4. **图片缩放和浏览**
-   - **鼠标滚轮**: 放大/缩小图片
-   - **双击图片**: 放大到2倍或还原到原始尺寸
-   - **拖拽移动**: 放大后可拖拽查看图片不同区域
-   - **适应模式**: 
-     - 🔲 适应窗口：默认模式，图片完整显示在窗口内
-     - ↔ 适应宽度：推荐长图使用，图片宽度撑满，可滚动查看
-     - 🔲 原始尺寸：显示图片真实大小，支持双向滚动
+4. **Image Zoom and Navigation**
+   - **Mouse Wheel**: Zoom in/out on images
+   - **Double-click Image**: Zoom to 2x or restore to original size
+   - **Drag to Pan**: After zooming, drag to view different areas of the image
+   - **Adaptive Modes**:
+     - 🔲 Fit Window: Default mode, image displayed completely within window
+     - ↔ Fit Width: Recommended for long images, image width fills screen, scrollable
+     - 🔲 Original Size: Display image at actual size, supports bidirectional scrolling
 
-5. **键盘快捷键**
-   - `←` `→` : 在全屏预览中切换上一张/下一张图片
-   - `ESC` : 退出全屏预览模式
+5. **Keyboard Shortcuts**
+   - `←` `→`: Switch to previous/next image in full-screen preview
+   - `ESC`: Exit full-screen preview mode
 
-### 高级功能
+### Advanced Features
 
-- **批量管理**: 可以添加多个文件夹，统一管理所有图片
-- **清除功能**: 一键清除所有已加载的图片
-- **智能路径显示**: 
-  - 网格视图：保持简洁，悬浮时显示完整路径
-  - 列表视图：直接显示完整文件路径
-  - 预览模式：提供详细的路径信息
-- **高级预览功能**:
-  - 多级缩放：0.1倍到5倍的精确缩放控制
-  - 智能适应：自动识别长图并提供最佳显示模式
-  - 拖拽平移：放大后可自由拖拽查看细节
-  - 集成工具栏：与图片信息融合显示，节省空间且不遮挡图片内容
-- **文件信息**: 显示图片大小、修改时间等详细信息
+- **Batch Management**: Add multiple folders to manage all images uniformly
+- **Clear Function**: One-click clear all loaded images
+- **Smart Path Display**:
+  - Grid View: Keep it concise, show full path on hover
+  - List View: Display complete file paths directly
+  - Preview Mode: Provide detailed path information
+- **Advanced Preview Features**:
+  - Multi-level Zoom: Precise zoom control from 0.1x to 5x
+  - Smart Adaptation: Automatically recognize long images and provide optimal display mode
+  - Drag Pan: Freely drag to view details after zooming
+  - Integrated Toolbar: Fused with image information display, space-saving without blocking image content
+- **File Information**: Display image size, modification time, and other detailed information
 
+## 🚀 Deployment
 
-## 🚀 部署
-
-### 静态部署
-构建后的文件可以部署到任何静态文件服务器：
+### Static Deployment
+Built files can be deployed to any static file server:
 
 ```bash
 pnpm build
-# 将 dist/ 目录部署到服务器
+# Deploy the dist/ directory to your server
 ```
 
-详细配置说明请参考 [PUBLISH_README.md](./PUBLISH_README.md)
+For detailed configuration instructions, please refer to [PUBLISH_README.md](./PUBLISH_README.md)
 
-## 🤝 贡献
+## 🤝 Contributing
 
-欢迎提交 Issue 和 Pull Request！
+Welcome to submit Issues and Pull Requests!
 
-## 📄 许可证
+## 📄 License
 
 MIT License
 
-## 🙏 致谢
+## 🙏 Acknowledgments
 
-- Vue.js 团队
-- Vite 团队  
+- Vue.js Team
+- Vite Team
 
 ---
 
-如果这个项目对你有帮助，欢迎给个 ⭐️ ! 
+If this project helps you, please give it a ⭐️! 
